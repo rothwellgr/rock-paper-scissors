@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src="https://kit.fontawesome.com/6589bade98.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="sub-container">
+            <h3>Rock, Paper, Scissors</h3>
+            <p>There are 5 rounds. Click one:</p>
+
+            <i id="0" class="fa-solid fa-hand-back-fist fa-2xl"></i>
+            <i id="1" class="fa-solid fa-hand-paper fa-2xl"></i>
+            <i id="2" class="fa-solid fa-hand-scissors fa-2xl"></i>
+
+            <br>
+            <br>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script defer>
+        let humanScore = 0;
+        let computerScore = 0;
+        let roundCount = 0;
+
+        const icons = document.querySelectorAll("i");
+        const results = document.querySelector("#results"); 
+        const finalResult = document.createElement("p");
+
+        icons.forEach((icon) => {
+            icon.addEventListener("click", () => {
+                if (roundCount < 5) {
+                    playRound(Number(icon.id));
+                }
+            });
+        });
+
+        function getComputerChoice() {
+            return Math.floor(Math.random() * 3);
+        }
+
+        function mapResultToIcon(playerIcon, result) {
+            switch (result) {
+                case 0:
+                    playerIcon.setAttribute("class", "fa-solid fa-hand-back-fist");
+                    break;
+                case 1:
+                    playerIcon.setAttribute("class", "fa-solid fa-hand-paper");
+                    break;
+                case 2:
+                    playerIcon.setAttribute("class", "fa-solid fa-hand-scissors");
+                    break;
+                default:
+                    throw new Error("something went wrong setting icon");
+            }
+        }
+
+        function playRound(choice) {
+
+            let humanResult = choice;
+            let computerResult = getComputerChoice();
+
+            const humanGameIcon = document.createElement("i");
+            const computerGameIcon = document.createElement("i");          
+            const humanIcon = document.createElement("i");          
+            const computerIcon = document.createElement("i");
+
+            mapResultToIcon(humanGameIcon, humanResult);
+            mapResultToIcon(computerGameIcon, computerResult)
+
+            if (humanResult == computerResult) {
+                console.log("drew that round - no need to increment");
+            } else if ((humanResult == 0 && computerResult == 2) || (humanResult == 1 && computerResult == 0) || (humanResult == 2 && computerResult == 1)) {
+                humanScore++;
+            } else {
+                computerScore++;  
+            }
+
+            humanIcon.textContent += " : " + humanScore + " ";
+            computerIcon.textContent += " : " + computerScore;
+
+            humanIcon.setAttribute("class", "fa-solid fa-person");
+            humanIcon.setAttribute("style", "white-space: pre;");
+            computerIcon.setAttribute("class", "fa-solid fa-laptop-code"); 
+
+            results.append(humanGameIcon, computerGameIcon, document.createElement("p"), humanIcon, computerIcon, document.createElement("p"));
+
+            roundCount++;
+            if (roundCount >= 5) {
+                if (humanScore > computerScore) {
+                    finalResult.textContent += "You win!";
+                    results.appendChild(finalResult);
+                } else if (computerScore > humanScore) {
+                    finalResult.textContent += "You lose, the computer wins.";
+                    results.appendChild(finalResult);
+                } else if (humanScore == computerScore) {
+                    finalResult.textContent += "It's a draw!";
+                    results.appendChild(finalResult);
+                } else {
+                    throw new Error("Something went wrong with scoring.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
